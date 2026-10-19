@@ -1,32 +1,38 @@
 REPORTE DEL DATAFRAME
 ============================================================
-Filas: 14347
-Columnas: 6
+Filas: 20640
+Columnas: 9
 Duplicados: 0
 
 Columnas y tipos:
 - Ingreso_mediano: float64
 - Edad_vivienda: float64
 - Promedio_habitaciones: float64
+- Promedio_dormitorio_hogar: float64
 - Poblacion: float64
+- Promedio_ocupacion: float64
+- Latitud: float64
+- Longitud: float64
 - Valor_mediano_vivienda: float64
-- Valor_en_dolares: float64
 
 Valores nulos por columna:
 - Ingreso_mediano: 0
 - Edad_vivienda: 0
 - Promedio_habitaciones: 0
+- Promedio_dormitorio_hogar: 0
 - Poblacion: 0
+- Promedio_ocupacion: 0
+- Latitud: 0
+- Longitud: 0
 - Valor_mediano_vivienda: 0
-- Valor_en_dolares: 0
 
 Estadísticas numéricas:
-       Ingreso_mediano  Edad_vivienda  Promedio_habitaciones  Poblacion  Valor_mediano_vivienda  Valor_en_dolares
-count        14347.000      14347.000              14347.000  14347.000               14347.000         14347.000
-mean             3.750         35.142                  5.201   1258.586                   2.127        212737.785
-std              1.889          8.901                  2.263    799.315                   1.203        120256.840
-min              0.500         21.000                  0.846      5.000                   0.150         14999.000
-25%              2.484         28.000                  4.337    759.500                   1.208        120800.000
-50%              3.400         34.000                  5.069   1091.000                   1.849        184900.000
-75%              4.562         41.000                  5.820   1553.500                   2.722        272200.000
-max             15.000         52.000                141.909  12427.000                   5.000        500001.000
+       Ingreso_mediano  Edad_vivienda  Promedio_habitaciones  Promedio_dormitorio_hogar  Poblacion  Promedio_ocupacion    Latitud   Longitud  Valor_mediano_vivienda
+count        20640.000      20640.000              20640.000                  20640.000  20640.000           20640.000  20640.000  20640.000               20640.000
+mean             3.871         28.639                  5.429                      1.097   1425.477               3.071     35.632   -119.570                   2.069
+std              1.900         12.586                  2.474                      0.474   1132.462              10.386      2.136      2.004                   1.154
+min              0.500          1.000                  0.846                      0.333      3.000               0.692     32.540   -124.350                   0.150
+25%              2.563         18.000                  4.441                      1.006    787.000               2.430     33.930   -121.800                   1.196
+50%              3.535         29.000                  5.229                      1.049   1166.000               2.818     34.260   -118.490                   1.797
+75%              4.743         37.000                  6.052                      1.100   1725.000               3.282     37.710   -118.010                   2.647
+max             15.000         52.000                141.909                     34.067  35682.000            1243.333     41.950   -114.310                   5.000
