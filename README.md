@@ -1,6 +1,6 @@
 # 📚 Machine Learning
 
-Repositorio de las entregas de la materia de **Machine Learning**: un notebook ejecutable que carga un dataset desde Hugging Face, le aplica transformaciones mínimas con pandas y deja un resumen `.txt`.
+Repositorio de las entregas de la materia de **Machine Learning**: un notebook ejecutable que carga un dataset desde Hugging Face, le aplica transformaciones mínimas con pandas y deja un reporte `.txt`.
 
 ## 👩‍💻 Autores
 
@@ -14,8 +14,8 @@ Repositorio de las entregas de la materia de **Machine Learning**: un notebook e
 src/
   clases/                        Clases reutilizables
     __init__.py
-    loader_hf.py                  Carga del dataset desde Hugging Face a un DataFrame
-    reporte.py                    Reportes: genera y guarda el resumen .txt de un DataFrame
+    loader_hf.py                  Carga el dataset desde Hugging Face a un DataFrame
+    reporte.py                    Reportes: genera y guarda el reporte .txt de un DataFrame
   notebook/
     data/
         california_housing.csv    Dataset con formato .csv
@@ -92,38 +92,6 @@ No se debe ejecutar `.venv/bin/activate` directamente, porque `activate` es un s
 
 Después abre `src/notebook/notebook_1.ipynb`, selecciona el kernel de `.venv` y ejecuta todas las celdas de arriba hacia abajo.
 
-## 📐 Autenticación en Hugging Face
-
-Para descargar datasets públicos normalmente no se necesita un token. Si el dataset es privado o requiere aceptar condiciones de uso, inicia sesión con el entorno virtual activado:
-
-```bash
-hf auth login
-```
-
-La terminal muestra una URL (`https://hf.co/oauth/device`) y un código: ábrela en el navegador, escribe el código y autoriza el acceso. Comprueba que funcionó:
-
-```bash
-hf auth whoami
-```
-
-La sesión queda guardada localmente. No escribas tokens en archivos Python ni los subas a GitHub; si uno se expone, revócalo desde [Access Tokens](https://huggingface.co/settings/tokens) y crea uno nuevo.
-
-## ⚙️ Carga de un dataset como DataFrame
-
-El dataset se descarga con la librería `datasets` y se convierte a un `pandas.DataFrame`:
-
-```python
-from datasets import load_dataset
-
-ds = load_dataset("gvlassis/california_housing")
-df = ds["train"].to_pandas()
-
-print(df.shape)
-print(df.columns.tolist())
-```
-
-La clase de carga del proyecto está en `src/clases/loader_hf.py`.
-
 ## :page_facing_up: Reporte en texto
 
 `Reportes` recibe el DataFrame en cada método, así que se crea sin argumentos:
@@ -133,7 +101,7 @@ from clases.reporte import Reportes
 
 reportes = Reportes()
 reportes.imprimir_reporte(df_t4)                              # muestra el resumen en consola
-ruta = reportes.guardar_reporte(df_t4, "salidas/resumen.txt")  # escribe el .txt
+ruta = reportes.guardar_reporte(df_t4, "reportes/california_housing.txt")  # escribe el .txt
 print(f"Reporte guardado en: {ruta}")
 ```
 
@@ -154,9 +122,3 @@ Reportes().imprimir_reporte(df)
 El workflow de `.github/workflows/` ejecuta el notebook y sube los resultados a `main` con un commit automático. Antes de hacer `git push`, el workflow trae los cambios remotos con `git pull --rebase origin main`, para evitar que `main` lo rechace por haber avanzado mientras corría.
 
 Como el workflow también sube commits, haz `git pull` antes de empezar a trabajar y antes de cada `git push`.
-
-## :busts_in_silhouette: Trabajo en equipo
-
-- Haz `git pull` antes de editar y antes de subir cambios.
-- Evita editar el mismo notebook al mismo tiempo: los archivos `.ipynb` generan conflictos con facilidad.
-- Si quieres aislar tus cambios, trabaja en una rama propia y combínala con un Pull Request.
