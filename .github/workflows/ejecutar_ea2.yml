@@ -1,0 +1,92 @@
+name: Ejecutar EA2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/notebook/notebook_2.ipynb"
+      - "requirements.txt"
+      - ".github/workflows/ejecutar_ea2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ejecutar-ea2-main
+  cancel-in-progress: false
+
+jobs:
+  ejecutar-notebook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Crear entorno virtual
+        run: python -m venv .venv
+
+      - name: Instalar dependencias
+        run: |
+          source .venv/bin/activate
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install -r requirements.txt
+
+      - name: Borrar el resumen anterior
+        run: rm -f src/notebook/reportes/entrega_2/resumen_modelos.txt
+
+      - name: Ejecutar notebook_2.ipynb
+        working-directory: src/notebook
+        run: |
+          source ../../.venv/bin/activate
+          mkdir -p "$RUNNER_TEMP/ea2"
+          jupyter nbconvert \
+            --to notebook \
+            --execute \
+            --output-dir "$RUNNER_TEMP/ea2" \
+            --output notebook_2_ejecutado.ipynb \
+            --ExecutePreprocessor.timeout=1800 \
+            notebook_2.ipynb
+
+      - name: Verificar que el notebook generó el resumen
+        run: |
+          test -s src/notebook/reportes/entrega_2/resumen_modelos.txt
+          cat src/notebook/reportes/entrega_2/resumen_modelos.txt
+
+      - name: Publicar el resumen como artefacto descargable
+        uses: actions/upload-artifact@v4
+        with:
+          name: entrega-2-resumen
+          path: src/notebook/reportes/entrega_2/resumen_modelos.txt
+
+      - name: Publicar el notebook ejecutado como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: entrega-2-notebook-ejecutado
+          path: ${{ runner.temp }}/ea2/notebook_2_ejecutado.ipynb
+
+      - name: Guardar una copia del resumen en el repositorio
+        run: |
+          git config user.name "KateLopez05"
+          git config user.email "146386020+KateLopez05@users.noreply.github.com"
+          git add src/notebook/reportes/entrega_2/resumen_modelos.txt
+
+          if git diff --cached --quiet; then
+            echo "No se generaron cambios."
+            exit 0
+          fi
+
+          git commit -m "chore: actualizar resultados de entrega 2 [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main

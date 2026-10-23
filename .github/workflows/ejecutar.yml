@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "src/notebook/notebook_1.ipynb"
 
 permissions:
   contents: write
@@ -43,7 +45,7 @@ jobs:
         run: |
           mkdir -p src/notebook/data src/notebook/reportes
           find src/notebook/data -mindepth 1 -delete
-          find src/notebook/reportes -mindepth 1 -delete
+          find src/notebook/reportes/entrega_1 -mindepth 1 -delete
 
       - name: Ejecutar notebook_1.ipynb
         working-directory: src/notebook

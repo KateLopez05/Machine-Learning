@@ -1,0 +1,103 @@
+RESUMEN AUTOMÁTICO DE LOS MODELOS
+Fecha de ejecución: 2026-10-23 02:17:32
+Python 3.14.2 | pandas 2.2.3 | numpy 2.5.4 | scikit-learn 1.9.1
+
+======================================================================
+1. DATASET Y PREPROCESAMIENTO
+======================================================================
+Dataset: BrianSuToronto/california_housing (split 'train')
+Tamaño original: 20640 filas x 9 columnas
+Nulos: 0 | Duplicados: 0
+
+Preprocesamiento aplicado:
+- Renombrado de columnas al español.
+- Variable de clasificación 'Categoria_valor' con terciles de Valor_mediano_vivienda:
+    Bajo: de 0.150 a 1.414
+    Medio: de 1.415 a 2.303
+    Alto: de 2.304 a 5.000
+- Enriquecimiento: Habitaciones_por_dormitorio = Promedio_habitaciones / Promedio_dormitorio_hogar
+- Transformación log1p en: Promedio_ocupacion, Promedio_dormitorio_hogar, Promedio_habitaciones, Poblacion
+  Asimetría antes -> después:
+    Promedio_ocupacion: 97.64 -> 3.88
+    Promedio_dormitorio_hogar: 31.32 -> 8.99
+    Promedio_habitaciones: 20.7 -> 1.39
+    Poblacion: 4.94 -> -1.04
+- División: 16512 filas de entrenamiento y 4128 de prueba (20% prueba), estratificada por Categoria_valor, random_state=42
+- Escalado con StandardScaler ajustado solo con entrenamiento y aplicado a prueba.
+- Predictoras (9): Ingreso_mediano, Edad_vivienda, Promedio_habitaciones, Promedio_dormitorio_hogar, Poblacion, Promedio_ocupacion, Latitud, Longitud, Habitaciones_por_dormitorio
+
+======================================================================
+2. MODELO DE REGRESIÓN LINEAL
+======================================================================
+Objetivo: Valor_mediano_vivienda (cientos de miles de USD)
+Predictoras: Ingreso_mediano, Edad_vivienda, Promedio_habitaciones, Promedio_dormitorio_hogar, Poblacion, Promedio_ocupacion, Latitud, Longitud, Habitaciones_por_dormitorio
+Algoritmo: LinearRegression
+Parámetros: {'copy_X': True, 'fit_intercept': True, 'n_jobs': None, 'positive': False, 'tol': 1e-06}
+Entrenamiento: 16512 filas | Prueba: 4128 filas
+
+Métricas en prueba:
+  MAE:  0.497 (aprox. 49,653 USD)
+  RMSE: 0.691 (aprox. 69,055 USD)
+  R2:   0.651
+  MAE del modelo base (promedio): 0.922
+Intercepto: 2.0665
+Coeficientes estandarizados:
+  Latitud: -0.8876
+  Longitud: -0.8262
+  Ingreso_mediano: +0.8028
+  Promedio_habitaciones: -0.3565
+  Promedio_dormitorio_hogar: +0.3050
+  Promedio_ocupacion: -0.2589
+  Habitaciones_por_dormitorio: +0.1872
+  Edad_vivienda: +0.1348
+  Poblacion: +0.0435
+
+Interpretación:
+- El modelo explica 65.1% de la variación del valor de las viviendas.
+- Se equivoca en promedio 49,653 USD, un 46% menos que el modelo base.
+- Mayor efecto: Latitud (-0.8876).
+
+======================================================================
+3. MODELO DE CLASIFICACIÓN (REGRESIÓN LOGÍSTICA)
+======================================================================
+Objetivo: Categoria_valor (clases: Bajo, Medio, Alto)
+Predictoras: Ingreso_mediano, Edad_vivienda, Promedio_habitaciones, Promedio_dormitorio_hogar, Poblacion, Promedio_ocupacion, Latitud, Longitud, Habitaciones_por_dormitorio
+Algoritmo: LogisticRegression
+Parámetros: {'C': 1.0, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'l1_ratio': 0.0, 'max_iter': 1000, 'n_jobs': None, 'penalty': 'deprecated', 'random_state': 42, 'solver': 'lbfgs', 'tol': 0.0001, 'verbose': 0, 'warm_start': False}
+Entrenamiento: 16512 filas | Prueba: 4128 filas
+
+Métricas en prueba:
+  Exactitud: 0.730
+  F1 macro:  0.730
+  Exactitud del modelo base (clase más frecuente): 0.334
+
+              precision    recall  f1-score   support
+
+        Bajo      0.787     0.761     0.774      1377
+       Medio      0.611     0.621     0.616      1375
+        Alto      0.794     0.807     0.801      1376
+
+    accuracy                          0.730      4128
+   macro avg      0.731     0.730     0.730      4128
+weighted avg      0.731     0.730     0.730      4128
+
+Matriz de confusión (filas: real, columnas: predicho):
+            Pred Bajo  Pred Medio  Pred Alto
+Real Bajo        1048         300         29
+Real Medio        262         854        259
+Real Alto          22         243       1111
+
+Interpretación:
+- Clase mejor reconocida: Alto (F1 0.801); más difícil: Medio (F1 0.616).
+- Errores totales: 1115; entre clases vecinas: 1064 (95%); extremos (Bajo<->Alto): 51.
+- Variable con mayor peso para 'Alto': Latitud (-3.123).
+
+======================================================================
+4. CONCLUSIONES Y LIMITACIONES
+======================================================================
+- La regresión supera a su referencia (MAE 0.497 vs 0.922) y la clasificación supera a la suya (exactitud 0.730 vs 0.334).
+- La regresión deja 34.9% de la variación sin explicar.
+- Son modelos lineales: la ubicación (Latitud/Longitud) tiene una relación no lineal con el precio.
+- Los terciles de Categoria_valor se calcularon con todo el dataset antes de dividir.
+- Resultados de una sola partición entrenamiento/prueba, sin validación cruzada.
+- Asimetría residual tras el logaritmo: Promedio_ocupacion (3.88), Promedio_dormitorio_hogar (8.99), Promedio_habitaciones (1.39), Poblacion (-1.04).
