@@ -6,7 +6,8 @@ on:
       - main
     paths:
       - "src/notebook/notebook_1.ipynb"
-
+  workflow_dispatch:
+  
 permissions:
   contents: write
 
