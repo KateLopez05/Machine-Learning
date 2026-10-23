@@ -1,6 +1,6 @@
 RESUMEN AUTOMÁTICO DE LOS MODELOS
-Fecha de ejecución: 2026-10-23 02:17:32
-Python 3.14.2 | pandas 2.2.3 | numpy 2.5.4 | scikit-learn 1.9.1
+Fecha de ejecución: 2026-10-23 02:37:42
+Python 3.12.15 | pandas 2.2.3 | numpy 2.5.4 | scikit-learn 1.9.1
 
 ======================================================================
 1. DATASET Y PREPROCESAMIENTO
