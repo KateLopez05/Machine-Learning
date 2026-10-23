@@ -43,7 +43,7 @@ jobs:
 
       - name: Limpiar datos y reportes generados
         run: |
-          mkdir -p src/notebook/data src/notebook/reportes
+          mkdir -p src/notebook/data src/notebook/reportes/entrega_1
           find src/notebook/data -mindepth 1 -delete
           find src/notebook/reportes/entrega_1 -mindepth 1 -delete
 
