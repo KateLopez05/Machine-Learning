@@ -12,9 +12,9 @@ Repositorio de las entregas de la materia de Machine Learning. Cada entrega es u
 | Entrega | Notebook | Qué hace | Workflow | Resumen generado |
 |---|---|---|---|---|
 | 1 | `src/notebook/notebook_1.ipynb` | Carga de un dataset desde Hugging Face, transformaciones mínimas con pandas y reporte en texto | `.github/workflows/ejecutar.yml` | `src/notebook/reportes/entrega_1` |
-| 2 | `src/notebook/notebook_2.ipynb` | Construcción del DataFrame, preprocesamiento, regresión lineal, clasificación y resumen de ambos modelos | `.github/workflows/ejecutar_ea2.yml` | `src/reportes/entrega_2/resumen_modelos.txt` |
+| 2 | `src/notebook/notebook_2.ipynb` | Construcción del DataFrame, preprocesamiento, regresión lineal, clasificación y resumen de ambos modelos | `.github/workflows/ejecutar_ea2.yml` | `src/notebook/reportes/entrega_2/resumen_modelos.txt` |
 
-Cada entrega tiene su propio workflow, y cada workflow solo se activa cuando cambian los archivos de su entrega, para que trabajar en una no altere la ejecución de la otra.
+Cada entrega tiene su propio workflow, y cada workflow solo se activa cuando cambian los archivos de su entrega, para que trabajar en una no altere la ejecución de la otra. La entrega 2 también se activa con cambios en `src/clases/**` y en `requirements.txt`, porque ejecuta esas clases y esas dependencias.
 
 ## 🗄️ Estructura
 
@@ -23,15 +23,20 @@ Cada entrega tiene su propio workflow, y cada workflow solo se activa cuando cam
   ejecutar.yml             Entrega 1: ejecuta notebook_1.ipynb
   ejecutar_ea2.yml         Entrega 2: ejecuta notebook_2.ipynb y publica el resumen
 src/
-  clases/                  Clases reutilizables (carga desde Hugging Face y reportes)
+  clases/                  Clases reutilizables
+    loader_hf.py             Carga del dataset desde Hugging Face
+    reporte.py               Reportes: resumen .txt de un DataFrame (entrega 1)
+    regresion_lineal.py      RegresionLineal: flujo de regresión (clase del docente)
+    clasificador_tabular.py  ClasificadorTabular: flujo de clasificación con datos numéricos
   notebook/
-    notebook_1.ipynb       Entrega 1
-    notebook_2.ipynb       Entrega 2
-  reportes/
-    entrega_1/
-      california_housing.txt Resumen automático de la entrega 1
-    entrega_2/
-      resumen_modelos.txt   Resumen automático de la entrega 2
+    notebook_1.ipynb         Entrega 1
+    notebook_2.ipynb         Entrega 2
+    data/                    Datos descargados por la entrega 1
+    modelos/                 Modelos .pkl de la entrega 2 (no se suben al repositorio)
+    reportes/
+      entrega_1/             Resumen automático de la entrega 1
+      entrega_2/
+        resumen_modelos.txt  Resumen automático de la entrega 2
 requirements.txt           Dependencias del proyecto
 ```
 
@@ -88,9 +93,11 @@ Cada operación devuelve un DataFrame nuevo y no modifica el anterior. El `.txt`
 
 1. **Construcción del DataFrame:** carga automática, tamaño, columnas, tipos y muestra.
 2. **Preprocesamiento:** columnas renombradas al español, variable de clasificación `Categoria_valor` (terciles de `Valor_mediano_vivienda`), enriquecimiento con `Habitaciones_por_dormitorio`, transformación logarítmica en cuatro variables sesgadas, división 80/20 estratificada (`random_state=42`) y escalado con `StandardScaler` ajustado solo con entrenamiento.
-3. **Regresión lineal:** predice `Valor_mediano_vivienda` con `LinearRegression` (parámetros por defecto).
-4. **Clasificación:** predice `Categoria_valor` (Bajo, Medio, Alto) con `LogisticRegression(max_iter=1000, random_state=42)`.
-5. **Resumen automático:** escribe `src/reportes/entrega_2/resumen_modelos.txt` con el dataset, el preprocesamiento, los parámetros, las métricas, la interpretación, la fecha de ejecución y las limitaciones. Todo el contenido sale de la ejecución, no está escrito a mano.
+3. **Regresión lineal:** predice `Valor_mediano_vivienda` con la clase `RegresionLineal` (`src/clases/regresion_lineal.py`), que valida los datos, entrena un `LinearRegression` con parámetros por defecto, guarda el modelo en un `.pkl` y calcula MAE, RMSE y R².
+4. **Clasificación:** predice `Categoria_valor` (Bajo, Medio, Alto) con la clase `ClasificadorTabular` (`src/clases/clasificador_tabular.py`), que construye un pipeline `StandardScaler` + `LogisticRegression(max_iter=1000, random_state=42)`, divide con estratificación (las mismas filas que la regresión) y guarda el modelo en un `.pkl`.
+5. **Resumen automático:** escribe `src/notebook/reportes/entrega_2/resumen_modelos.txt` con el dataset, el preprocesamiento, los parámetros, las métricas, la interpretación, la fecha de ejecución y las limitaciones. Todo el contenido sale de la ejecución, no está escrito a mano.
+
+Las dos clases siguen la estructura de las clases del docente (validar, dividir, entrenar, predecir, evaluar y obtener parámetros). `ClasificadorTexto` no se usó porque está pensada para texto (TF-IDF), y esta entrega trabaja con variables numéricas, por lo que se creó `ClasificadorTabular` con la misma estructura. Los modelos entrenados se guardan en `src/notebook/modelos/entrega_2/` y no se suben al repositorio.
 
 **Resultados de referencia** (última ejecución, datos de prueba)
 
@@ -114,6 +121,15 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+Se recomienda **Python 3.12**, la misma versión que usa el workflow de GitHub Actions.
+
+En Windows (PowerShell), el entorno se crea y se activa así:
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
 En Bash, el entorno virtual debe activarse con `source` (o con un punto). No se debe ejecutar `.venv/bin/activate` directamente. Cuando se activa bien, el prompt muestra `(.venv)`.
 
 Después, abre `src/notebook/notebook_2.ipynb`, selecciona el kernel de `.venv` y ejecuta todas las celdas, o ejecútalo desde la terminal:
@@ -124,7 +140,7 @@ jupyter nbconvert --to notebook --execute \
   src/notebook/notebook_2.ipynb
 ```
 
-El resumen queda en `src/reportes/entrega_2/resumen_modelos.txt`.
+El resumen queda en `src/notebook/reportes/entrega_2/resumen_modelos.txt`.
 
 ### Autenticación en Hugging Face (solo si el dataset lo exige)
 
@@ -146,7 +162,7 @@ Cada workflow se activa con un `push` a `main` que cambie los archivos de su ent
 1. Instala las dependencias de `requirements.txt`.
 2. Borra el resumen anterior, para que el archivo final corresponda a esta ejecución.
 3. Ejecuta `notebook_2.ipynb` completo: dataset, DataFrame, preprocesamiento, ambos modelos y resumen.
-4. Verifica que `src/reportes/entrega_2/resumen_modelos.txt` exista y no esté vacío.
+4. Verifica que `src/notebook/reportes/entrega_2/resumen_modelos.txt` exista y no esté vacío.
 5. Publica dos artefactos descargables: `entrega-2-resumen` (el `.txt`) y `entrega-2-notebook-ejecutado`.
 6. Guarda una copia del `.txt` en el repositorio con un commit automático `[skip ci]`.
 
@@ -155,6 +171,7 @@ El notebook ejecutado se publica solo como artefacto y no reemplaza al `notebook
 **Cómo ver y descargar los resultados:** en la pestaña **Actions**, elige **Ejecutar EA2**, abre una ejecución y baja hasta la sección **Artifacts**.
 
 **Ejecución exitosa de la entrega 2:** [ver ejecución](https://github.com/KateLopez05/Machine-Learning/actions/runs/39890508964)
+
 Como los workflows también suben commits, conviene hacer `git pull` antes de empezar a trabajar y antes de cada `git push`.
 
 ## Control de versiones y trabajo en equipo
