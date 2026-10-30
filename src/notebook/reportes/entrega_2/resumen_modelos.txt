@@ -1,6 +1,6 @@
 RESUMEN AUTOMÁTICO DE LOS MODELOS
-Fecha de ejecución: 2026-10-30 18:24:23
-Python 3.13.7 | pandas 2.2.3 | numpy 2.5.4 | scikit-learn 1.9.1
+Fecha de ejecución: 2026-10-30 23:33:57
+Python 3.12.15 | pandas 2.2.3 | numpy 2.5.4 | scikit-learn 1.9.1
 
 ======================================================================
 1. DATASET Y PREPROCESAMIENTO
@@ -35,7 +35,7 @@ Implementación: clase RegresionLineal (src/clases/regresion_lineal.py)
 Algoritmo: LinearRegression
 Parámetros: {'copy_X': True, 'fit_intercept': True, 'n_jobs': None, 'positive': False, 'tol': 1e-06}
 Configuración: test_size=0.2, random_state=42
-Modelo guardado: 20261030_182422_707933_modelo.pkl
+Modelo guardado: 20261030_233357_344995_modelo.pkl
 Entrenamiento: 16512 filas | Prueba: 4128 filas
 
 Métricas en prueba:
@@ -68,7 +68,7 @@ Predictoras: Ingreso_mediano, Edad_vivienda, Promedio_habitaciones, Promedio_dor
 Implementación: clase ClasificadorTabular (src/clases/clasificador_tabular.py)
 Algoritmo: LogisticRegression (con StandardScaler dentro del pipeline)
 Configuración: test_size=0.2, random_state=42, estratificada
-Modelo guardado: 20261030_182422_891964_LogisticRegression.pkl
+Modelo guardado: 20261030_233357_553510_LogisticRegression.pkl
 Parámetros: {'C': 1.0, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'l1_ratio': 0.0, 'max_iter': 1000, 'n_jobs': None, 'penalty': 'deprecated', 'random_state': 42, 'solver': 'lbfgs', 'tol': 0.0001, 'verbose': 0, 'warm_start': False}
 Entrenamiento: 16512 filas | Prueba: 4128 filas
 
