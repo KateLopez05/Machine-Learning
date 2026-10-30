@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Modelos entrenados (.pkl) generados por la clase RegresionLineal 
+src/notebook/modelos/

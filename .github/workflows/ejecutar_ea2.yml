@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "src/notebook/notebook_2.ipynb"
+      - "src/clases/**"
       - "requirements.txt"
       - ".github/workflows/ejecutar_ea2.yml"
   workflow_dispatch:
