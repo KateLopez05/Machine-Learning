@@ -1,11 +1,11 @@
 RESUMEN AUTOMÁTICO DE LA EJECUCIÓN
 ACTIVIDAD 3 - APRENDIZAJE SUPERVISADO
 ===========================================================================
-Fecha de ejecución: 2026-11-08 11:35:11
+Fecha de ejecución: 2026-11-08 11:43:53
 Python: 3.12.16
 Pandas: 2.2.3
-NumPy: 2.5.4
-Scikit-learn: 1.9.1
+NumPy: 2.1.3
+Scikit-learn: 1.6.1
 
 ===========================================================================
 1. PREGUNTA DE NEGOCIO
@@ -71,10 +71,11 @@ Parámetros efectivos del modelo:
 - dual: False
 - fit_intercept: True
 - intercept_scaling: 1
-- l1_ratio: 0.0
+- l1_ratio: None
 - max_iter: 1000
+- multi_class: deprecated
 - n_jobs: None
-- penalty: deprecated
+- penalty: l2
 - random_state: 42
 - solver: lbfgs
 - tol: 0.0001
@@ -135,8 +136,8 @@ Real Alto              36             252           1088
 ===========================================================================
 6. MODELO GENERADO
 ===========================================================================
-Archivo del modelo: 20261108_113509_914536_LogisticRegression_C10.pkl
-Ruta: /home/runner/work/Machine-Learning/Machine-Learning/src/notebook/modelos/entrega_3/20261108_113509_914536_LogisticRegression_C10.pkl
+Archivo del modelo: 20261108_114352_338006_LogisticRegression_C10.pkl
+Ruta: /home/runner/work/Machine-Learning/Machine-Learning/src/notebook/modelos/entrega_3/20261108_114352_338006_LogisticRegression_C10.pkl
 
 ===========================================================================
 7. NOTA SOBRE LA INTERPRETACIÓN
