@@ -1,8 +1,27 @@
-numpy>=2.0,<3
+
+# ==========================================
+# MACHINE LEARNING - DEPENDENCIAS DEL PROYECTO
+# Python 3.12
+# ==========================================
+
+# Procesamiento y análisis de datos
+numpy==2.1.3
 pandas==2.2.3
+
+# Visualización
 matplotlib==3.9.4
+
+# Aprendizaje automático
+scikit-learn==1.6.1
+
+# Descarga y procesamiento de datasets
+datasets==3.3.2
+pyarrow==19.0.1
+
+# Archivos Excel
+openpyxl==3.1.5
+
+# Jupyter Notebook
 ipykernel==6.29.5
-datasets
-nbconvert 
-matplotlib
-scikit-learn 
+ipywidgets==8.1.5
+nbconvert==7.16.6
