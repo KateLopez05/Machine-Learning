@@ -1,0 +1,132 @@
+
+name: Ejecutar EA3 - Clasificación de viviendas
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/notebook/notebook_3.ipynb"
+      - "requirements.txt"
+      - ".github/workflows/ejecutar_ea3.yml"
+
+  # Se conserva como opción adicional para pruebas.
+  # El requisito de ejecución automática lo cumple el push.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ejecutar-ea3-main
+  cancel-in-progress: false
+
+jobs:
+  ejecutar-notebook:
+    runs-on: ubuntu-latest
+
+    env:
+      MPLBACKEND: Agg
+
+    steps:
+      # ------------------------------------------------------
+      # 1. Obtener el repositorio
+      # ------------------------------------------------------
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ------------------------------------------------------
+      # 2. Configurar Python
+      # ------------------------------------------------------
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      # ------------------------------------------------------
+      # 3. Instalar dependencias
+      # ------------------------------------------------------
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      # ------------------------------------------------------
+      # 4. Preparar directorios
+      # ------------------------------------------------------
+      - name: Preparar directorios de resultados
+        run: |
+          mkdir -p src/notebook/reportes/entrega_3/figuras
+          mkdir -p src/notebook/modelos/entrega_3
+          rm -f src/notebook/reportes/entrega_3/resumen_modelo.txt
+
+      # ------------------------------------------------------
+      # 5. Ejecutar el notebook completo
+      # ------------------------------------------------------
+      - name: Ejecutar notebook_3.ipynb
+        working-directory: src/notebook
+        run: |
+          mkdir -p "$RUNNER_TEMP/ea3"
+
+          jupyter nbconvert \
+            --to notebook \
+            --execute \
+            --output-dir "$RUNNER_TEMP/ea3" \
+            --output notebook_3_ejecutado.ipynb \
+            --ExecutePreprocessor.timeout=1800 \
+            notebook_3.ipynb
+
+      # ------------------------------------------------------
+      # 6. Verificar el resumen y las gráficas
+      # ------------------------------------------------------
+      - name: Verificar resultados generados
+        run: |
+          test -s src/notebook/reportes/entrega_3/resumen_modelo.txt
+
+          test -s src/notebook/reportes/entrega_3/figuras/01_distribucion_categorias.png
+          test -s src/notebook/reportes/entrega_3/figuras/02_matriz_confusion.png
+          test -s src/notebook/reportes/entrega_3/figuras/03_comparacion_hiperparametros.png
+
+          echo "Resumen y gráficas generados correctamente."
+
+          echo "Contenido del resumen:"
+          cat src/notebook/reportes/entrega_3/resumen_modelo.txt
+
+      # ------------------------------------------------------
+      # 7. Publicar los resultados como artefacto descargable
+      # ------------------------------------------------------
+      - name: Publicar resultados de la Entrega 3
+        uses: actions/upload-artifact@v4
+        with:
+          name: entrega-3-resultados
+          path: |
+            src/notebook/reportes/entrega_3/resumen_modelo.txt
+            src/notebook/reportes/entrega_3/figuras/*.png
+          if-no-files-found: error
+          retention-days: 30
+
+      # ------------------------------------------------------
+      # 8. Actualizar la copia del resumen y las gráficas
+      #    dentro del repositorio
+      # ------------------------------------------------------
+      - name: Guardar resultados generados en GitHub
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add src/notebook/reportes/entrega_3/resumen_modelo.txt
+          git add src/notebook/reportes/entrega_3/figuras/
+
+          if git diff --cached --quiet; then
+            echo "Los resultados no presentan cambios."
+            exit 0
+          fi
+
+          git commit -m "chore: actualizar resultados de entrega 3 [skip ci]"
+
+          git pull --rebase origin main
+          git push origin HEAD:main
