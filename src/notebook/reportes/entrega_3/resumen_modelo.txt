@@ -1,8 +1,8 @@
 RESUMEN AUTOMÁTICO DE LA EJECUCIÓN
 ACTIVIDAD 3 - APRENDIZAJE SUPERVISADO
 ===========================================================================
-Fecha de ejecución: 2026-11-08 06:58:13
-Python: 3.12.3
+Fecha de ejecución: 2026-11-08 07:31:12
+Python: 3.12.16
 Pandas: 2.2.3
 NumPy: 2.5.4
 Scikit-learn: 1.9.1
@@ -135,8 +135,8 @@ Real Alto              36             252           1088
 ===========================================================================
 6. MODELO GENERADO
 ===========================================================================
-Archivo del modelo: 20261108_065813_480387_LogisticRegression_C10.pkl
-Ruta: /workspaces/Machine-Learning/src/notebook/modelos/entrega_3/20261108_065813_480387_LogisticRegression_C10.pkl
+Archivo del modelo: 20261108_073110_856640_LogisticRegression_C10.pkl
+Ruta: /home/runner/work/Machine-Learning/Machine-Learning/src/notebook/modelos/entrega_3/20261108_073110_856640_LogisticRegression_C10.pkl
 
 ===========================================================================
 7. NOTA SOBRE LA INTERPRETACIÓN
