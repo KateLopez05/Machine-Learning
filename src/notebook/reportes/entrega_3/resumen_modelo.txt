@@ -1,0 +1,147 @@
+RESUMEN AUTOMÁTICO DE LA EJECUCIÓN
+ACTIVIDAD 3 - APRENDIZAJE SUPERVISADO
+===========================================================================
+Fecha de ejecución: 2026-11-08 06:58:13
+Python: 3.12.3
+Pandas: 2.2.3
+NumPy: 2.5.4
+Scikit-learn: 1.9.1
+
+===========================================================================
+1. PREGUNTA DE NEGOCIO
+===========================================================================
+¿Qué características socioeconómicas y geográficas permiten identificar si una zona residencial de California pertenece a un segmento de valor de vivienda bajo, medio o alto?
+
+===========================================================================
+2. DATASET Y PREPROCESAMIENTO
+===========================================================================
+Dataset: BrianSuToronto/california_housing
+Split utilizado: train
+Registros: 20640
+Columnas del DataFrame transformado: 10
+Valores nulos: 0
+Registros duplicados: 0
+
+Preprocesamiento aplicado:
+- Renombrado de las columnas originales al español.
+- Creación de Categoria_valor mediante tres terciles de Valor_mediano_vivienda.
+- Categorías objetivo: Bajo, Medio y Alto.
+- Identificación de valores extremos mediante el método IQR.
+- Conservación de los valores extremos identificados.
+- Exclusión de Valor_mediano_vivienda de las variables predictoras para evitar fuga de información.
+- División estratificada: 80% entrenamiento y 20% prueba.
+- Uso de StandardScaler dentro del Pipeline de clasificación.
+
+Variables predictoras:
+- Ingreso_mediano
+- Edad_vivienda
+- Promedio_habitaciones
+- Promedio_dormitorio_hogar
+- Poblacion
+- Promedio_ocupacion
+- Latitud
+- Longitud
+Variable objetivo: Categoria_valor
+Categorías: Bajo, Medio, Alto
+
+Distribución de categorías:
+- Bajo: 6884
+- Medio: 6876
+- Alto: 6880
+
+División de los datos:
+- Entrenamiento: 16512 registros
+- Prueba: 4128 registros
+- Proporción de prueba: 20%
+- random_state: 42
+- Estratificación: activada
+
+===========================================================================
+3. TIPO DE APRENDIZAJE Y ALGORITMO
+===========================================================================
+Tipo de aprendizaje: Supervisado.
+Problema: Clasificación multiclase.
+Algoritmo: Regresión Logística (LogisticRegression).
+Preprocesamiento del modelo: StandardScaler.
+Estructura: Pipeline de Scikit-learn.
+
+Parámetros efectivos del modelo:
+- C: 10.0
+- class_weight: None
+- dual: False
+- fit_intercept: True
+- intercept_scaling: 1
+- l1_ratio: 0.0
+- max_iter: 1000
+- n_jobs: None
+- penalty: deprecated
+- random_state: 42
+- solver: lbfgs
+- tol: 0.0001
+- verbose: 0
+- warm_start: False
+
+===========================================================================
+4. CONFIGURACIÓN DE LA OPTIMIZACIÓN
+===========================================================================
+Método: GridSearchCV
+Validación cruzada: StratifiedKFold
+Número de particiones: 5
+Métrica de selección: F1 macro
+Mejores parámetros: {'modelo__C': 10.0}
+Mejor valor de C: 10.0
+Mejor F1 macro en validación cruzada: 0.7138
+
+Comparación de hiperparámetros:
+ param_modelo__C  mean_test_score  std_test_score  mean_train_score
+            0.01         0.686417        0.008677          0.686804
+            0.10         0.707626        0.007571          0.708381
+            1.00         0.712505        0.009081          0.713155
+           10.00         0.713849        0.009041          0.713939
+
+===========================================================================
+5. MÉTRICAS DEL MODELO OPTIMIZADO
+===========================================================================
+Exactitud (Accuracy): 0.7178
+F1 macro: 0.7187
+F1 ponderado: 0.7188
+
+Resultados por categoría:
+
+Categoría: Bajo
+- Precisión: 0.7727
+- Recall: 0.7480
+- F1-score: 0.7601
+- Registros: 1377
+
+Categoría: Medio
+- Precisión: 0.5926
+- Recall: 0.6145
+- F1-score: 0.6034
+- Registros: 1375
+
+Categoría: Alto
+- Precisión: 0.7947
+- Recall: 0.7907
+- F1-score: 0.7927
+- Registros: 1376
+
+Matriz de confusión:
+            Predicho Bajo  Predicho Medio  Predicho Alto
+Real Bajo            1030             329             18
+Real Medio            267             845            263
+Real Alto              36             252           1088
+
+===========================================================================
+6. MODELO GENERADO
+===========================================================================
+Archivo del modelo: 20261108_065813_480387_LogisticRegression_C10.pkl
+Ruta: /workspaces/Machine-Learning/src/notebook/modelos/entrega_3/20261108_065813_480387_LogisticRegression_C10.pkl
+
+===========================================================================
+7. NOTA SOBRE LA INTERPRETACIÓN
+===========================================================================
+Las categorías Bajo, Medio y Alto representan terciles relativos del valor mediano de vivienda del conjunto de datos. No constituyen rangos universales de precios ni una tasación individual.
+Los resultados corresponden a una evaluación sobre un conjunto de prueba separado y a una búsqueda de hiperparámetros mediante validación cruzada de cinco particiones.
+
+FIN DEL RESUMEN
